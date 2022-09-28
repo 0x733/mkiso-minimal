@@ -86,6 +86,12 @@ chroot chroot apt-get install linux-image-liquorix-amd64 -y
 ##### Usefull stuff
 chroot chroot apt-get install kbd console-data network-manager debootstrap -y
 
+#### usbcore stuff (for initramfs)
+echo "#!/bin/sh" > chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
+echo "echo Y > /sys/module/usbcore/parameters/old_scheme_first" >> chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
+chmod +x chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
+chroot chroot update-initramfs -u -k all
+
 ### Remove sudo (optional)
 chroot chroot apt purge sudo -y
 chroot chroot apt autoremove -y
