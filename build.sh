@@ -109,6 +109,11 @@ rm -f chroot/root/.bash_history
 rm -rf chroot/var/lib/apt/lists/*
 find chroot/var/log/ -type f | xargs rm -f
 
+### Create iso template
+mkdir -p debjaro/boot || true
+mkdir -p debjaro/live || true
+ln -s live debjaro/casper || true
+
 #### Copy kernel and initramfs (Debian/Devuan)
 cp -pf chroot/boot/initrd.img-* debjaro/boot/initrd.img
 cp -pf chroot/boot/vmlinuz-* debjaro/boot/vmlinuz
@@ -118,7 +123,6 @@ rm -rf chroot/boot/initrd.img-*
 rm -rf chroot/boot/vmlinuz-*
 
 #### Create squashfs
-mkdir -p debjaro/boot || true
 for dir in dev dev/pts proc sys ; do
     while umount -lf -R chroot/$dir 2>/dev/null ; do true; done
 done
@@ -127,18 +131,13 @@ done
 # For better compress ratio
 mksquashfs chroot filesystem.squashfs -comp xz -wildcards
 
-
-mkdir -p debjaro/live || true
-ln -s live debjaro/casper || true
+### Move squashfs file into iso template
 mv filesystem.squashfs debjaro/live/filesystem.squashfs
-
-### Remove initramfs file (for decrease iso size)
-rm -f chroot/boot/initrd.img-*
 
 #### Write grub.cfg
 mkdir -p debjaro/boot/grub/
 echo 'menuentry "Start Debjaro GNU/Linux 64-bit" --class debjaro {' > debjaro/boot/grub/grub.cfg
-echo '    linux /boot/vmlinuz boot=live live-config --' >> debjaro/boot/grub/grub.cfg
+echo '    linux /boot/vmlinuz boot=live live-config quiet --' >> debjaro/boot/grub/grub.cfg
 echo '    initrd /boot/initrd.img' >> debjaro/boot/grub/grub.cfg
 echo '}' >> debjaro/boot/grub/grub.cfg
 
