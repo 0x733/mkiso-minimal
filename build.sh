@@ -20,7 +20,7 @@ export DEBIAN_FRONTEND=noninteractive
 #### Install dependencies
 if which apt &>/dev/null && [[ -d /var/lib/dpkg && -d /etc/apt ]] ; then
     apt-get update
-    apt-get install curl mtools squashfs-tools grub-pc-bin grub-efi xorriso debootstrap -y
+    apt-get install curl mtools squashfs-tools grub-pc-bin grub-efi xorriso debootstrap binutils -y
 fi
 
 set -ex
@@ -97,6 +97,7 @@ chroot chroot update-initramfs -u -k all
 rm -rf  chroot/lib/modules/*/kernel/drivers/media
 rm -rf  chroot/lib/modules/*/kernel/drivers/gpu
 rm -rf  chroot/lib/modules/*/kernel/sound
+find chroot/lib/modules/*/ -iname "*.ko" -exec strip --strip-unneeded {} \;
 chroot chroot depmod -a $(ls chroot/lib/modules)
 
 ### Remove sudo (optional)
