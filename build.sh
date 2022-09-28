@@ -39,10 +39,10 @@ echo -e "$pass\n$pass\n" | chroot chroot passwd
 # apt sandbox user root
 echo "APT::Sandbox::User root;" > chroot/etc/apt/apt.conf.d/99sandboxroot
 for i in dev dev/pts proc sys; do mount -o bind /$i chroot/$i; done
-chroot chroot apt-get install gnupg -y
+chroot chroot apt-get install gnupg --no-install-recommends  -y
 
 ##### Devuan only
-chroot chroot apt-get install devuan-keyring -y
+chroot chroot apt-get install devuan-keyring --no-install-recommends -y
 
 #### Debjaro repository (optional)
 echo "deb https://debjaro.github.io/repo/stable stable main" > chroot/etc/apt/sources.list.d/debjaro.list
@@ -52,7 +52,7 @@ chroot chroot apt-get full-upgrade -y
 
 
 #### live packages for debian/devuan
-chroot chroot apt-get install live-config live-boot -y
+chroot chroot apt-get install live-config live-boot --no-install-recommends  -y
 echo "DISABLE_DM_VERITY=true" >> chroot/etc/live/boot.conf
 
 #### Configure system
