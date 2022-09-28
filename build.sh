@@ -91,7 +91,6 @@ chroot chroot apt-get install network-manager debootstrap -y
 echo "#!/bin/sh" > chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
 echo "echo Y > /sys/module/usbcore/parameters/old_scheme_first" >> chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
 chmod +x chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
-chroot chroot update-initramfs -u -k all
 
 ### remove unused modules (optional)
 rm -rf  chroot/lib/modules/*/kernel/drivers/media
@@ -99,6 +98,7 @@ rm -rf  chroot/lib/modules/*/kernel/drivers/gpu
 rm -rf  chroot/lib/modules/*/kernel/sound
 find chroot/lib/modules/*/ -iname "*.ko" -exec strip --strip-unneeded {} \;
 chroot chroot depmod -a $(ls chroot/lib/modules)
+chroot chroot update-initramfs -u -k all
 
 ### Remove sudo (optional)
 chroot chroot apt purge sudo -y
