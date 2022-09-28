@@ -48,7 +48,7 @@ chroot chroot apt-get install devuan-keyring -y
 echo "deb https://debjaro.github.io/repo/stable stable main" > chroot/etc/apt/sources.list.d/debjaro.list
 curl https://debjaro.github.io/repo/stable/dists/stable/Release.key | chroot chroot apt-key add -
 chroot chroot apt-get update -y
-chroot chroot apt-get upgrade -y
+chroot chroot apt-get full-upgrade -y
 
 
 #### live packages for debian/devuan
@@ -72,6 +72,7 @@ DPkg::Post-Invoke {"rm -rf /usr/share/man || true";};
 DPkg::Post-Invoke {"rm -rf /usr/share/help || true";};
 DPkg::Post-Invoke {"rm -rf /usr/share/doc || true";};
 DPkg::Post-Invoke {"rm -rf /usr/share/info || true";};
+DPkg::Post-Invoke {"rm -rf /usr/share/i18n || true";};
 EOF
 
 
@@ -84,13 +85,19 @@ chroot chroot apt-get install linux-image-liquorix-amd64 -y
 
 
 ##### Usefull stuff
-chroot chroot apt-get install kbd console-data network-manager debootstrap -y
+chroot chroot apt-get install network-manager debootstrap -y
 
 #### usbcore stuff (for initramfs)
 echo "#!/bin/sh" > chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
 echo "echo Y > /sys/module/usbcore/parameters/old_scheme_first" >> chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
 chmod +x chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
 chroot chroot update-initramfs -u -k all
+
+### remove unused modules (optional)
+rm -rf  chroot/lib/modules/*/kernel/drivers/media
+rm -rf  chroot/lib/modules/*/kernel/drivers/gpu
+rm -rf  chroot/lib/modules/*/kernel/sound
+chroot chroot depmod -a $(ls chroot/lib/modules)
 
 ### Remove sudo (optional)
 chroot chroot apt purge sudo -y
@@ -102,6 +109,14 @@ rm -f chroot/root/.bash_history
 rm -rf chroot/var/lib/apt/lists/*
 find chroot/var/log/ -type f | xargs rm -f
 
+#### Copy kernel and initramfs (Debian/Devuan)
+cp -pf chroot/boot/initrd.img-* debjaro/boot/initrd.img
+cp -pf chroot/boot/vmlinuz-* debjaro/boot/vmlinuz
+
+#### remove vmlinuz and initrd for minimize iso size (optional)
+rm -rf chroot/boot/initrd.img-*
+rm -rf chroot/boot/vmlinuz-*
+
 #### Create squashfs
 mkdir -p debjaro/boot || true
 for dir in dev dev/pts proc sys ; do
@@ -111,10 +126,6 @@ done
 #mksquashfs chroot filesystem.squashfs -comp gzip -wildcards
 # For better compress ratio
 mksquashfs chroot filesystem.squashfs -comp xz -wildcards
-
-#### Copy kernel and initramfs (Debian/Devuan)
-cp -pf chroot/boot/initrd.img-* debjaro/boot/initrd.img
-cp -pf chroot/boot/vmlinuz-* debjaro/boot/vmlinuz
 
 
 mkdir -p debjaro/live || true
