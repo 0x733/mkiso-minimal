@@ -96,7 +96,6 @@ chmod +x chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
 rm -rf  chroot/lib/modules/*/kernel/drivers/media
 rm -rf  chroot/lib/modules/*/kernel/drivers/gpu
 rm -rf  chroot/lib/modules/*/kernel/sound
-find chroot/lib/modules/*/ -iname "*.ko" -exec strip --strip-unneeded {} \;
 chroot chroot depmod -a $(ls chroot/lib/modules)
 chroot chroot update-initramfs -u -k all
 
