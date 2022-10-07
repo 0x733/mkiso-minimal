@@ -83,10 +83,6 @@ chroot chroot apt-get update -y
 chroot chroot apt-get install linux-image-liquorix-amd64 -y
 #chroot chroot apt-get install linux-headers-liquorix-amd64 -y
 
-
-##### Usefull stuff
-chroot chroot apt-get install network-manager debootstrap -y
-
 #### usbcore stuff (for initramfs)
 echo "#!/bin/sh" > chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
 echo "echo Y > /sys/module/usbcore/parameters/old_scheme_first" >> chroot/etc/initramfs-tools/scripts/init-top/usbcore.sh
