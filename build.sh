@@ -52,7 +52,7 @@ chroot chroot apt-get full-upgrade -y
 
 
 #### live packages for debian/devuan
-chroot chroot apt-get install live-config live-boot --no-install-recommends  -y
+chroot chroot apt-get install live-config live-boot network-manager --no-install-recommends  -y
 echo "DISABLE_DM_VERITY=true" >> chroot/etc/live/boot.conf
 
 #### Configure system
