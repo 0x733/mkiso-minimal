@@ -46,7 +46,7 @@ chroot chroot apt-get install devuan-keyring --no-install-recommends -y
 
 #### Debjaro repository (optional)
 echo "deb https://debjaro.github.io/repo/stable stable main" > chroot/etc/apt/sources.list.d/debjaro.list
-curl https://debjaro.github.io/repo/stable/dists/stable/Release.key | chroot chroot apt-key add -
+curl https://debjaro.github.io/repo/stable/dists/stable/Release.key | gpg --dearmor > chroot/etc/apt/trusted.gpg.d/debjaro.gpg
 chroot chroot apt-get update -y
 chroot chroot apt-get full-upgrade -y
 
