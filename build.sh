@@ -29,7 +29,7 @@ mkdir chroot || true
 
 #### For devuan
 debootstrap --variant=minbase --no-check-gpg --no-merged-usr --exclude=usrmerge --arch=amd64 testing chroot https://pkgmaster.devuan.org/merged
-echo "deb https://pkgmaster.devuan.org/merged testing main contrib non-free" > chroot/etc/apt/sources.list
+echo "deb https://pkgmaster.devuan.org/merged testing main contrib non-free non-free-firmware" > chroot/etc/apt/sources.list
 
 #### Set root password
 pass="live"
