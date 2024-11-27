@@ -18,7 +18,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
 apt-get install -y curl mtools squashfs-tools grub-pc-bin grub-efi-amd64-bin \
-    grub2-common xorriso debootstrap binutils --no-install-recommends
+    grub2-common xorriso debootstrap binutils ca-certificates --no-install-recommends
 
 mkdir -p chroot
 
@@ -32,8 +32,7 @@ for dir in dev dev/pts proc sys; do mount --bind /$dir chroot/$dir; done
 
 chroot chroot apt-get install -y gnupg network-manager live-config live-boot --no-install-recommends
 
-echo "deb http://liquorix.net/debian bookworm main" > chroot/etc/apt/sources.list.d/liquorix.list
-curl https://liquorix.net/liquorix-keyring.gpg | chroot chroot apt-key add -
+curl -fsSL https://liquorix.net/add-liquorix-repo.sh | chroot chroot bash
 chroot chroot apt-get update
 chroot chroot apt-get install -y linux-image-liquorix-amd64 linux-headers-liquorix-amd64
 
