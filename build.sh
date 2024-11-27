@@ -53,7 +53,10 @@ mkdir -p iso/boot iso/live
 cp -pf chroot/boot/vmlinuz-* iso/boot/vmlinuz
 cp -pf chroot/boot/initrd.img-* iso/boot/initrd.img
 
-for dir in dev dev/pts proc sys; do umount -lf chroot/$dir; done
+for dir in dev dev/pts proc sys; do
+    umount -lf chroot/$dir 2>/dev/null || true
+done
+
 mksquashfs chroot iso/live/filesystem.squashfs -comp xz -wildcards
 
 mkdir -p iso/boot/grub/
