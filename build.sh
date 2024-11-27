@@ -22,8 +22,8 @@ apt-get install -y curl mtools squashfs-tools grub-pc-bin grub-efi-amd64-bin \
 
 mkdir -p chroot
 
-debootstrap --variant=minbase --no-check-gpg --arch=amd64 bullseye chroot http://deb.debian.org/debian
-echo "deb http://deb.debian.org/debian bullseye main contrib non-free non-free-firmware" > chroot/etc/apt/sources.list
+debootstrap --variant=minbase --no-check-gpg --arch=amd64 bookworm chroot http://deb.debian.org/debian
+echo "deb http://deb.debian.org/debian bookworm main contrib non-free non-free-firmware" > chroot/etc/apt/sources.list
 
 echo -e "live\nlive\n" | chroot chroot passwd
 
@@ -32,7 +32,7 @@ for dir in dev dev/pts proc sys; do mount --bind /$dir chroot/$dir; done
 
 chroot chroot apt-get install -y gnupg network-manager live-config live-boot --no-install-recommends
 
-echo "deb http://liquorix.net/debian bullseye main" > chroot/etc/apt/sources.list.d/liquorix.list
+echo "deb http://liquorix.net/debian bookworm main" > chroot/etc/apt/sources.list.d/liquorix.list
 curl https://liquorix.net/liquorix-keyring.gpg | chroot chroot apt-key add -
 chroot chroot apt-get update
 chroot chroot apt-get install -y linux-image-liquorix-amd64 linux-headers-liquorix-amd64
@@ -61,14 +61,14 @@ mksquashfs chroot iso/live/filesystem.squashfs -comp xz -wildcards
 
 mkdir -p iso/boot/grub/
 cat > iso/boot/grub/grub.cfg << EOF
-menuentry "Start GNOME Debian GNU/Linux with Liquorix Kernel" {
+menuentry "Start GNOME Debian GNU/Linux with Liquorix Kernel (Debian 12)" {
     linux /boot/vmlinuz boot=live quiet
     initrd /boot/initrd.img
 }
 EOF
 
-ISO_NAME="gnome-liquorix-debian-$(date +%Y%m%d).iso"
+ISO_NAME="gnome-liquorix-debian12-$(date +%Y%m%d).iso"
 grub-mkrescue iso -o "$ISO_NAME"
 
 rm -rf chroot iso
-echo "GNOME Liquorix Kernel Debian ISO created: $ISO_NAME"
+echo "GNOME Liquorix Kernel Debian 12 ISO created: $ISO_NAME"
