@@ -30,7 +30,7 @@ echo -e "live\nlive\n" | chroot chroot passwd
 echo "APT::Sandbox::User root;" > chroot/etc/apt/apt.conf.d/99sandboxroot
 for dir in dev dev/pts proc sys; do mount --bind /$dir chroot/$dir; done
 
-chroot chroot apt-get install -y gnupg network-manager live-config live-boot --no-install-recommends
+chroot chroot apt-get install -y gnupg network-manager live-config live-boot curl --no-install-recommends
 
 curl -fsSL https://liquorix.net/add-liquorix-repo.sh | chroot chroot bash
 chroot chroot apt-get update
