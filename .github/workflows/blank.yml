@@ -16,8 +16,7 @@ jobs:
         run: |
           sudo bash build.sh
           sudo mkdir -p /output
-          sudo mv debjaro*.iso /output/debjaro-daily.iso
-
+          sudo mv gnome-liquorix-debian12-*.iso /output/
 
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
@@ -27,4 +26,3 @@ jobs:
           title: "Daily build"
           files: |
             /output/*
-
