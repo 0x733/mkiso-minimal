@@ -32,8 +32,9 @@ for dir in dev dev/pts proc sys; do mount --bind /$dir chroot/$dir; done
 
 chroot chroot apt-get install -y gnupg network-manager live-config live-boot curl --no-install-recommends
 
-curl -fsSL https://liquorix.net/add-liquorix-repo.sh | chroot chroot bash
-chroot chroot apt-get update
+curl https://liquorix.net/liquorix-keyring.gpg | chroot chroot apt-key add -
+echo "deb http://liquorix.net/debian bookworm main" > chroot/etc/apt/sources.list.d/liquorix.list
+chroot chroot apt-get update -y
 chroot chroot apt-get install -y linux-image-liquorix-amd64 linux-headers-liquorix-amd64
 
 chroot chroot apt-get install -y task-gnome-desktop gnome-terminal gnome-tweaks
