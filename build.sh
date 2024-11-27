@@ -18,7 +18,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 apt-get update
 apt-get install -y curl mtools squashfs-tools grub-pc-bin grub-efi-amd64-bin \
-    grub2-common xorriso debootstrap binutils ca-certificates --no-install-recommends
+    grub2-common xorriso debootstrap binutils ca-certificates apt-transport-https gnupg --no-install-recommends
 
 mkdir -p chroot
 
@@ -30,10 +30,9 @@ echo -e "live\nlive\n" | chroot chroot passwd
 echo "APT::Sandbox::User root;" > chroot/etc/apt/apt.conf.d/99sandboxroot
 for dir in dev dev/pts proc sys; do mount --bind /$dir chroot/$dir; done
 
-chroot chroot apt-get install -y gnupg network-manager live-config live-boot curl --no-install-recommends
-
-curl https://liquorix.net/liquorix-keyring.gpg | chroot chroot apt-key add -
-echo "deb http://liquorix.net/debian bookworm main" > chroot/etc/apt/sources.list.d/liquorix.list
+chroot chroot apt-get install -y gnupg ca-certificates apt-transport-https curl --no-install-recommends
+wget -O /usr/share/keyrings/liquorix-archive-keyring.gpg https://liquorix.net/liquorix-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/liquorix-archive-keyring.gpg] http://liquorix.net/debian bookworm main" > chroot/etc/apt/sources.list.d/liquorix.list
 chroot chroot apt-get update -y
 chroot chroot apt-get install -y linux-image-liquorix-amd64 linux-headers-liquorix-amd64
 
